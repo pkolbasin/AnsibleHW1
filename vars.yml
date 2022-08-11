@@ -2,5 +2,4 @@ user: "student"
 users_passwd: "student_pass"
 users_group: "hillel"
 db_name: "empty_db"
-sql_user: "dbadmin"
-sql_passwd: "securePasswd"
+
