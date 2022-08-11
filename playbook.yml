@@ -1,0 +1,67 @@
+---
+- hosts: env
+  become: true
+  vars_files:
+  - vars.yml
+  tasks:
+
+  - name: install epel
+    yum:
+      name: epel-release
+      state: latest
+
+  - name: create a custom group
+    group:
+      name: "{{users_group}}"
+      state: present
+
+  - name: create custom user
+    user:
+      name: "{{user}}"
+      password: "{{users_passwd}}"
+      groups: hillel,wheel
+
+- name: install apache
+  hosts: app
+  become: true
+
+  tasks:
+  - name: install httpd
+    yum:
+      name: httpd
+      state: latest
+  - name: start and enable httpd
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+
+- name: install mysql
+  hosts: db
+  become: true
+
+  tasks:
+    - name: Install the latest version of MySql Server
+      yum:
+        name: mysql-community-server
+        state: latest
+    - name: mysql starts
+      service:
+        name: mysqld
+        state: started
+        enabled: yes
+
+    - name: install pip
+      yum:
+        name: python3-pip
+        state: latest
+
+    - name: install pymysql
+      pip:
+        name: PyMySQL
+
+    - name: create a new database
+      mysql_db:
+        name: "{{db_name}}"
+        state: present
+
